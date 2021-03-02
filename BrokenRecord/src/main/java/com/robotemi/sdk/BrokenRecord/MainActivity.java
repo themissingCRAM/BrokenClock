@@ -45,6 +45,7 @@ public class MainActivity extends AppCompatActivity implements
     private Robot robot;
 
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    private Thread sequenceThread;
 
     /**
      * Hiding keyboard after every button press
@@ -152,29 +153,45 @@ public class MainActivity extends AppCompatActivity implements
         robot.speak(ttsRequest);
         hideKeyboard();
     }
+
     public void onButtonAClick(View v) throws InterruptedException {
-        System.out.println("TESTXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX");
-        List<String> locations = robot.getLocations();
-     //   MapDataModel map =  robot.getMapData();
-        try{
-            for(String location:locations){
-                System.out.println(location);
-                robot.goTo(location);
-                Thread.sleep(1000);
-            }
-        } catch (RobotInterruptException e){
-            TtsRequest ttsRequest = TtsRequest.create(e.toString(), true);
-            robot.speak(ttsRequest);
+        if (sequenceThread == null) {
+            sequenceThread = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        List<String> locations = robot.getLocations();
+                        for (String location : locations) {
+                            String text = "going to location: "+location;
+                            System.out.println(text);
+                            TtsRequest ttsRequest = TtsRequest.create(text, true);
+                            robot.speak(ttsRequest);
+                            robot.goTo(location);
+                            Thread.sleep(1000);
+                        }
+                    } catch (InterruptedException e) {
+                        TtsRequest ttsRequest = TtsRequest.create("Sequence Interrupted, returning to home base", true);
+                        robot.speak(ttsRequest);
+                        robot.goTo("home base");
+                    }
+                }
+            });
+            sequenceThread.start();
+        } else {
+            System.out.println("sequenceThread is not null, please fix this bug ");
         }
 
+        //   MapDataModel map =  robot.getMapData();
 
-     //   robot.goTo("e");
-      //  System.out.println("-----------------------------------");
-       // System.out.println(map.getLocations());
+
+        //   robot.goTo("e");
+        //  System.out.println("-----------------------------------");
+        // System.out.println(map.getLocations());
     }
 
     public void onInterruptButtonClicked(View view) throws RobotInterruptException {
-        throw new RobotInterruptException();
+        sequenceThread.interrupt();
+
     }
 
 }
