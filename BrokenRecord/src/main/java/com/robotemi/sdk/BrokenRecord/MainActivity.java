@@ -154,7 +154,7 @@ public class MainActivity extends AppCompatActivity implements
         hideKeyboard();
     }
 
-    public void onButtonAClick(View v) throws InterruptedException {
+    public void onButtonAClick(View v) {
         if (sequenceThread == null) {
             sequenceThread = new Thread(new Runnable() {
                 @Override
@@ -162,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements
                     try {
                         List<String> locations = robot.getLocations();
                         for (String location : locations) {
-                            String text = "going to location: "+location;
+                            String text = "going to location: " + location;
                             System.out.println(text);
                             TtsRequest ttsRequest = TtsRequest.create(text, true);
                             robot.speak(ttsRequest);
@@ -180,16 +180,8 @@ public class MainActivity extends AppCompatActivity implements
         } else {
             System.out.println("sequenceThread is not null, please fix this bug ");
         }
-
-        //   MapDataModel map =  robot.getMapData();
-
-
-        //   robot.goTo("e");
-        //  System.out.println("-----------------------------------");
-        // System.out.println(map.getLocations());
     }
-
-    public void onInterruptButtonClicked(View view) throws RobotInterruptException {
+    public void onInterruptButtonClicked(View v){
         sequenceThread.interrupt();
 
     }
