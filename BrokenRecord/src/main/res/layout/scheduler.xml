@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/parent"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimaryDark"
+    android:orientation="vertical"
+    android:paddingTop="70dp"
+    tools:context="com.robotemi.BrokenRecord.BrokenRecord.Scheduler">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="739dp"
+            android:layout_height="200dp"
+            android:layout_weight="100"
+            android:width="100dp"
+            android:height="150dp"
+            android:autoSizeTextType="uniform"
+            android:text="Video/Audio Playing scheduler"
+            android:textColor="@color/colorWhite" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="687dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="100"
+            android:contentDescription="Go back to main display"
+            app:srcCompat="@drawable/ic_back" />
+
+        <Button
+            android:id="@+id/button3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="100"
+            android:text="Add a Education TimeSlot " />
+
+
+    </LinearLayout>
+
+    <CalendarView
+        android:id="@+id/calendarView"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="100" />
+</LinearLayout>

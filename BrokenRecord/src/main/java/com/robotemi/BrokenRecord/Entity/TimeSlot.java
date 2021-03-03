@@ -10,19 +10,21 @@ public class TimeSlot {
     private ArrayList<String> locations;
     private ArrayList<String> videoLinks;
     private int currentLocationPointer;
+    private String name;
+
     public static final int AT_THE_BEGINNING = -1;
     public static final int AT_THE_END = -2;
+
     public TimeSlot() {
 
     }
 
-    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, ArrayList<String> videoLinks) {
-        super();
+    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, ArrayList<String> videoLinks, String name) {
+        this.dateTime = dateTime;
+        this.locations = locations;
+        this.videoLinks = videoLinks;
+        this.name = name;
         this.setCurrentLocationPointer(AT_THE_BEGINNING);
-        this.setDateTime(dateTime);
-
-        this.setVideoLinks(videoLinks);
-        this.setLocations(locations);
     }
 
 
@@ -56,5 +58,13 @@ public class TimeSlot {
 
     public void setCurrentLocationPointer(int currentLocationPointer) {
         this.currentLocationPointer = currentLocationPointer;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

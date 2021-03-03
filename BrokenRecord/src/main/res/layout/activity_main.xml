@@ -9,40 +9,41 @@
     android:paddingTop="70dp"
     tools:context="com.robotemi.BrokenRecord.BrokenRecord.MainActivity">
 
-    <ScrollView
-        android:layout_width="536dp"
-        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="245dp"
+        android:layout_height="wrap_content"
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
+        android:orientation="vertical">
 
 
-            <Button
-                android:layout_width="match_parent"
-                android:layout_height="500px"
-                android:layout_marginBottom="100px"
-                android:onClick="onButtonAClick"
-                android:text="GO HERE"></Button>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="183dp"
+            android:layout_marginBottom="100dp"
+            android:autoSizeTextType="uniform"
+            android:onClick="onButtonAClick"
+            android:text="Start" />
 
-            <Button
-                android:id="@+id/button"
-                android:layout_width="486dp"
-                android:layout_height="200px"
-                android:onClick="onInterruptButtonClicked"
-                android:text="Abort Sequence" />
+        <Button
+            android:id="@+id/button"
+            android:layout_width="match_parent"
+            android:layout_height="200px"
+            android:autoSizeTextType="uniform"
+            android:onClick="onInterruptButtonClicked"
+            android:text="Abort Sequence" />
 
-            <Button
-                android:id="@+id/button2"
-                android:layout_width="match_parent"
-                android:layout_height="300px"
-          
-                android:text="Button" />
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="match_parent"
+            android:layout_height="300px"
+            android:autoSizeTextType="uniform"
+            android:text="Scheduler"
+            android:onClick="goToScheduler"
+            >
 
-        </LinearLayout>
-    </ScrollView>
+        </Button>
 
+    </LinearLayout>
     <VideoView
         android:id="@+id/videoView"
         android:layout_width="wrap_content"
