@@ -12,6 +12,9 @@ import android.view.inputmethod.InputMethodManager;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.navigation.Navigation;
 
 import com.robotemi.BrokenRecord.Entity.TimeSlot;
@@ -56,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         super.onStart();
         robot = Robot.getInstance();
         robot.addOnRobotReadyListener(this);
-        robot.addOnGoToLocationStatusChangedListener(this);
+       // robot.addOnGoToLocationStatusChangedListener(this);
         robot.addTtsListener(this);
 //        robot.showTopBar();
     }
@@ -69,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         super.onStop();
         robot.removeTtsListener(this);
         robot.removeOnRobotReadyListener(this);
-        robot.removeOnGoToLocationStatusChangedListener(this);
+        robot.removeTtsListener(this);
+        //robot.removeOnGoToLocationStatusChangedListener(this);
 
         robot.stopMovement();
         if (robot.checkSelfPermission(Permission.FACE_RECOGNITION) == Permission.GRANTED) {
@@ -143,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
     public void onButtonAClick(View v) {
         if (sequenceThread == null) {
+            robot.addOnGoToLocationStatusChangedListener(this);
             List<String> locations = new ArrayList<>(robot.getLocations());
             locations.remove(HOME_BASE);
             Collections.sort(locations);
@@ -161,11 +166,13 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     }
 
     public void onInterruptButtonClicked(View v) {
+
         robot.stopMovement();
         sequenceThread.interrupt();
+        robot.removeOnGoToLocationStatusChangedListener(this);
         TtsRequest request = TtsRequest.create("Interrupt button pressed, going back to home base ",true);
         robot.speak(request);
-        waitForTemiToFinishTts();
+
         robot.goTo(HOME_BASE);
     }
 
@@ -176,9 +183,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             return;
         if(sequenceThread.isAlive())
             sequenceThread.interrupt();
-        robot.removeOnGoToLocationStatusChangedListener(this);
 
         sequenceThread = new Thread(() -> {
+
             int previousLocation = testTimeSlot.getCurrentLocationPointer();
             TtsRequest request = TtsRequest.create("Hi here are some educational videos to watch " , true);
             robot.speak(request);
@@ -193,19 +200,20 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             int currentLocation = previousLocation + 1;
             if (currentLocation < testTimeSlot.getLocations().size()) {
                 testTimeSlot.setCurrentLocationPointer(currentLocation);
-
                 String currentLocationName = testTimeSlot.getLocations().get(currentLocation);
                 String text = "next, I am going to location: " + currentLocationName;
                 System.out.println(text);
-                TtsRequest ttsRequest = TtsRequest.create(text, true);
-                robot.speak(ttsRequest);
+//                TtsRequest ttsRequest = TtsRequest.create(text, true);
+//                robot.speak(ttsRequest);
                 robot.goTo(currentLocationName);
             } else {
                 testTimeSlot.setCurrentLocationPointer(TimeSlot.AT_THE_END);
-                TtsRequest ttsRequest = TtsRequest.create("I have arrived at the final destination, going back to home base", true);
+                TtsRequest ttsRequest = TtsRequest.create("Sequence complete, going back to home base", true);
                 robot.speak(ttsRequest);
                 waitForTemiToFinishTts();
-                robot.goTo("Home base");
+                robot.goTo(HOME_BASE);
+                robot.removeOnGoToLocationStatusChangedListener(this);
+
             }
         });
         sequenceThread.start();
@@ -214,7 +222,6 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        robot.addOnGoToLocationStatusChangedListener(this);
     }
 
     @Override
@@ -242,8 +249,5 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         //end of speech
     }
 
-    public void goToScheduler(View v){
-        Intent in = new Intent(MainActivity.this,Scheduler.class);
-        startActivity(in);
-    }//untested
+
 }

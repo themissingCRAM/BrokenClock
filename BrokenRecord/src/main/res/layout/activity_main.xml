@@ -50,4 +50,12 @@
         android:layout_height="wrap_content"
         android:layout_weight="1" />
 
+    <!-- res/layout/example_activity.xml -->
+    <androidx.fragment.app.FragmentContainerView
+        android:id="@+id/fragment_container_view"
+        android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivityFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" ></androidx.fragment.app.FragmentContainerView>
+
+
 </LinearLayout>

@@ -14,10 +14,7 @@
         android:supportsRtl="true"
         android:theme="@style/SkillTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity
-            android:name=".Settings"
-            android:label="@string/title_activity_settings"
-            android:theme="@style/NoActionBar"></activity>
+
         <!-- Adding this meta-data is required in order to display this app in temi's launcher app -->
         <meta-data
             android:name="com.robotemi.sdk.metadata.SKILL"
@@ -57,7 +54,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".OldMapActivity" />
+
     </application>
 
 </manifest>

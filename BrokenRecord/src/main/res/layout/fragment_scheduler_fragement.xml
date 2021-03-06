@@ -1,15 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimaryDark"
-    android:orientation="vertical"
-    android:paddingTop="70dp"
-    tools:context="com.robotemi.BrokenRecord.BrokenRecord.Scheduler">
-
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.robotemi.BrokenRecord.BrokenRecord.MainActivity">
+    <!-- If MainActivity doesn't work, use back Scheduler for the time being-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -42,7 +37,6 @@
             android:layout_weight="100"
             android:text="Add a Education TimeSlot " />
 
-
     </LinearLayout>
 
     <CalendarView
@@ -50,4 +44,8 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="100" />
-</LinearLayout>
+
+
+
+
+</FrameLayout>
