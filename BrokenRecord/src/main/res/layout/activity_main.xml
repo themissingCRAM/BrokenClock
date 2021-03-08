@@ -10,52 +10,23 @@
     tools:context="com.robotemi.BrokenRecord.BrokenRecord.MainActivity">
 
     <LinearLayout
-        android:layout_width="245dp"
-        android:layout_height="wrap_content"
-
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
         android:orientation="vertical">
-
-
-        <Button
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_view2"
+            android:name="com.robotemi.BrokenRecord.BrokenRecord.TopBarFragment"
             android:layout_width="match_parent"
-            android:layout_height="183dp"
-            android:layout_marginBottom="100dp"
-            android:autoSizeTextType="uniform"
-            android:onClick="onButtonAClick"
-            android:text="Start" />
+            android:layout_height="100dp" />
 
-        <Button
-            android:id="@+id/button"
+        <androidx.fragment.app.FragmentContainerView
+            android:id="@+id/fragment_container_view"
+            android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivityFragment"
             android:layout_width="match_parent"
-            android:layout_height="200px"
-            android:autoSizeTextType="uniform"
-            android:onClick="onInterruptButtonClicked"
-            android:text="Abort Sequence" />
-
-        <Button
-            android:id="@+id/button2"
-            android:layout_width="match_parent"
-            android:layout_height="300px"
-            android:autoSizeTextType="uniform"
-            android:text="Scheduler"
-            android:onClick="goToScheduler"
-            >
-
-        </Button>
+            android:layout_height="match_parent" />
 
     </LinearLayout>
-    <VideoView
-        android:id="@+id/videoView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_weight="1" />
-
-    <!-- res/layout/example_activity.xml -->
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/fragment_container_view"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivityFragment"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" ></androidx.fragment.app.FragmentContainerView>
-
 
 </LinearLayout>
+

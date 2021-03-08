@@ -1,50 +1,74 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context="com.robotemi.BrokenRecord.BrokenRecord.MainActivity">
-    <!-- If MainActivity doesn't work, use back Scheduler for the time being-->
-
+    tools:context="com.robotemi.BrokenRecord.BrokenRecord.SchedulerFragment">
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:orientation="horizontal">
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="739dp"
-            android:layout_height="200dp"
-            android:layout_weight="100"
-            android:width="100dp"
-            android:height="150dp"
-            android:autoSizeTextType="uniform"
-            android:text="Video/Audio Playing scheduler"
-            android:textColor="@color/colorWhite" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal">
 
-        <ImageButton
-            android:id="@+id/imageButton"
-            android:layout_width="687dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="100"
-            android:contentDescription="Go back to main display"
-            app:srcCompat="@drawable/ic_back" />
+            <ImageButton
+                android:id="@+id/imageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="101dp"
 
-        <Button
-            android:id="@+id/button3"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="100"
-            android:text="Add a Education TimeSlot " />
+                android:contentDescription="@string/back"
+                app:srcCompat="@drawable/ic_back" />
+
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="500dp"
+                android:layout_height="100dp"
+                android:autoSizeTextType="uniform"
+                android:text="@string/schedule"
+                android:textColor="@color/colorWhite"
+              />
+
+            <Button
+                android:id="@+id/AddATimeSlotButton"
+                android:layout_width="500dp"
+                android:layout_height="100dp"
+                android:text="@string/add_a_TimeSlot"
+                android:autoSizeTextType="uniform"/>
+        </LinearLayout>
+        <LinearLayout android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal">
+            <Button
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:autoSizeTextType="uniform"
+                android:onClick="onButtonAClick"
+                android:text="@string/test_a" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:autoSizeTextType="uniform"
+                android:onClick="onInterruptButtonClicked"
+                android:text="@string/abort_sequence" />
+
+            <CalendarView
+                android:id="@+id/calendarView"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="100" />
+        </LinearLayout>
+
 
     </LinearLayout>
-
-    <CalendarView
-        android:id="@+id/calendarView"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="100" />
-
 
 
 

@@ -2,22 +2,21 @@ package com.robotemi.BrokenRecord.BrokenRecord;
 
 import android.Manifest;
 import android.app.Activity;
-import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.navigation.Navigation;
 
 import com.robotemi.BrokenRecord.Entity.TimeSlot;
+import com.robotemi.BrokenRecord.Interface.MainActivityInterface;
 import com.robotemi.sdk.BrokenRecord.R;
 import com.robotemi.sdk.Robot;
 import com.robotemi.sdk.TtsRequest;
@@ -36,7 +35,8 @@ import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity implements OnRobotReadyListener,
         OnGoToLocationStatusChangedListener,
-        Robot.TtsListener {
+        Robot.TtsListener,
+        MainActivityInterface {
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -59,9 +59,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         super.onStart();
         robot = Robot.getInstance();
         robot.addOnRobotReadyListener(this);
-       // robot.addOnGoToLocationStatusChangedListener(this);
         robot.addTtsListener(this);
-//        robot.showTopBar();
     }
 
     /**
@@ -73,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         robot.removeTtsListener(this);
         robot.removeOnRobotReadyListener(this);
         robot.removeTtsListener(this);
-        //robot.removeOnGoToLocationStatusChangedListener(this);
+        robot.removeOnGoToLocationStatusChangedListener(this);
 
         robot.stopMovement();
         if (robot.checkSelfPermission(Permission.FACE_RECOGNITION) == Permission.GRANTED) {
@@ -89,7 +87,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         setContentView(R.layout.activity_main);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         verifyStoragePermissions(this);
-      robot = Robot.getInstance(); // get an instance of the robot in order to begin using its features.
+        robot = Robot.getInstance(); // get an instance of the robot in order to begin using its features.
 
     }
 
@@ -118,9 +116,6 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         }
     }
 
-    /**
-     * Hiding keyboard after every button press
-     */
 
     /**
      * Checks if the app has permission to write to device storage
@@ -151,74 +146,82 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             List<String> locations = new ArrayList<>(robot.getLocations());
             locations.remove(HOME_BASE);
             Collections.sort(locations);
-            testTimeSlot = new TimeSlot(new GregorianCalendar(), new ArrayList<>(locations), new ArrayList<>(),"test");
-            testTimeSlot.setCurrentLocationPointer(0);
-            String text = "Firstly, I am going to location: " + testTimeSlot.getLocations().get(testTimeSlot.getCurrentLocationPointer());
-            System.out.println(text);
-            sequenceThread = new Thread(() -> {
-                TtsRequest ttsRequest = TtsRequest.create(text, true);
-                robot.speak(ttsRequest);
-                robot.goTo(testTimeSlot.getLocations().get(testTimeSlot.getCurrentLocationPointer()));
-            });
-            sequenceThread.start();
+            locations.add(0, HOME_BASE);
+
+            testTimeSlot = new TimeSlot(new GregorianCalendar(), new ArrayList<>(locations), new ArrayList<>(), "test");
+
+            initialSequence();
+
         }
         assert sequenceThread != null : "This is a bug";
     }
 
     public void onInterruptButtonClicked(View v) {
-
         robot.stopMovement();
-        sequenceThread.interrupt();
+        if (sequenceThread.isAlive())
+            sequenceThread.interrupt();
         robot.removeOnGoToLocationStatusChangedListener(this);
-        TtsRequest request = TtsRequest.create("Interrupt button pressed, going back to home base ",true);
+        TtsRequest request = TtsRequest.create("Interrupt button pressed, going back to home base ", true);
         robot.speak(request);
-
         robot.goTo(HOME_BASE);
+    }
+
+    public void initialSequence() {
+        String text = "Starting timeSlot Session";
+        System.out.println(text);
+        // nextLocationPointer is already set in the TimeSlot Constructor
+        int nextLocationPointer = 1;
+        sequenceThread = new Thread(() -> {
+            TtsRequest ttsRequest = TtsRequest.create(text, true);
+            robot.speak(ttsRequest);
+            robot.goTo(testTimeSlot.getLocations().get(nextLocationPointer));
+        });
+        sequenceThread.start();
+
     }
 
     @Override
     public void onGoToLocationStatusChanged(@NotNull String s, @NotNull String s1, int i, @NotNull String s2) {
-//        System.out.println("Entered onGoTOLocationStatusChanged. Status:" + s1);
-        if (!s1.equals(OnGoToLocationStatusChangedListener.COMPLETE))
-            return;
-        if(sequenceThread.isAlive())
-            sequenceThread.interrupt();
 
+        if (!s1.equals(OnGoToLocationStatusChangedListener.COMPLETE)) {
+            return;
+        }
+        if (sequenceThread.isAlive()) {
+            sequenceThread.interrupt();
+        }
         sequenceThread = new Thread(() -> {
 
-            int previousLocation = testTimeSlot.getCurrentLocationPointer();
-            TtsRequest request = TtsRequest.create("Hi here are some educational videos to watch " , true);
+            int previousLocation = testTimeSlot.getNextLocationPointer();
+            TtsRequest request = TtsRequest.create("Hi here are some educational videos to watch ", true);
             robot.speak(request);
             waitForTemiToFinishTts();
             try {
                 Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+            } catch (InterruptedException ignored) {
             }
-
-
-            int currentLocation = previousLocation + 1;
-            if (currentLocation < testTimeSlot.getLocations().size()) {
-                testTimeSlot.setCurrentLocationPointer(currentLocation);
-                String currentLocationName = testTimeSlot.getLocations().get(currentLocation);
-                String text = "next, I am going to location: " + currentLocationName;
-                System.out.println(text);
-//                TtsRequest ttsRequest = TtsRequest.create(text, true);
-//                robot.speak(ttsRequest);
+            int nextLocationPointer = previousLocation + 1;
+            if (nextLocationPointer < testTimeSlot.getLocations().size()) {
+                testTimeSlot.setNextLocationPointer(nextLocationPointer);
+                String currentLocationName = testTimeSlot.getLocations().get(nextLocationPointer);
+                System.out.println("next, I am going to location: " + currentLocationName);
+                String thankYouText = "Thank you for your time";
+                TtsRequest ttsRequest = TtsRequest.create(thankYouText, true);
+                robot.speak(ttsRequest);
                 robot.goTo(currentLocationName);
             } else {
-                testTimeSlot.setCurrentLocationPointer(TimeSlot.AT_THE_END);
+                // nextLocationPointer == testTimeSlot.getLocations().size() means sequence is completed
                 TtsRequest ttsRequest = TtsRequest.create("Sequence complete, going back to home base", true);
                 robot.speak(ttsRequest);
                 waitForTemiToFinishTts();
                 robot.goTo(HOME_BASE);
                 robot.removeOnGoToLocationStatusChangedListener(this);
-
+                sequenceThread.interrupt();
+                sequenceThread = null;
             }
         });
         sequenceThread.start();
         try {
-            Thread.sleep(3000);
+            Thread.sleep(500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -226,28 +229,27 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
     @Override
     public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
-        System.out.println("onTtStatusChange: "+ttsRequest.getStatus());
+        System.out.println("onTtStatusChange: " + ttsRequest.getStatus());
         if (ttsRequest.getStatus().equals(TtsRequest.Status.COMPLETED)) {
-            isSpeaking = false;
+            setSpeaking(false);
         }
-
     }
-    private void waitForTemiToFinishTts() {
-        isSpeaking = true; // start of speech
-        System.out.println("Start of Speech");
 
+
+    public void waitForTemiToFinishTts() {
+        setSpeaking(true); // start of speech
+        System.out.println("In the middle of a speech");
         while (isSpeaking) {
-            System.out.println("speaking");
-
-            try {
-                Thread.sleep(300);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }//onTtsStatusChanged will tell this method that speech has stopped.
         }
         System.out.println("End of Speech");
-        //end of speech
     }
 
 
+    public boolean isSpeaking() {
+        return isSpeaking;
+    }
+
+    public void setSpeaking(boolean speaking) {
+        isSpeaking = speaking;
+    }
 }

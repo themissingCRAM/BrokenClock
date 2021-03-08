@@ -8,37 +8,63 @@
         android:id="@+id/MainActivityFragment"
         android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivity"
         android:label="goingToScheduler"
-        tools:layout="@layout/activity_main"
-        >
+        tools:layout="@layout/activity_main">
         <action
             android:id="@+id/MainActivityFragment_to_SchedulerFragment"
-            app:destination="@id/SchedulerFragment"
-         />
-
+            app:destination="@id/SchedulerFragment" />
+        <action android:id="@+id/MainAcitivity_to_VideoFragment"
+            app:destination="@+id/VideoFragment"/>
     </fragment>
     <fragment
         android:id="@+id/SchedulerFragment"
         android:name="com.robotemi.BrokenRecord.BrokenRecord.SchedulerFragment"
         android:label="goingToScheduler"
-        tools:layout="@layout/activity_main"
-        >
+        tools:layout="@layout/activity_main">
+<!--        <action-->
+<!--            android:id="@+id/SchedulerFragment_toMainActivity"-->
+<!--            app:destination="@id/MainActivityFragment" />-->
         <action
-            android:id="@+id/SchedulerFragment_toMainActivity"
-            app:destination="@id/MainActivityFragment"
-            />
-
+            android:id="@+id/SchedulerFragment_to_AddTimeSlotFragment"
+            app:destination="@id/AddTimeslotFragment" />
     </fragment>
-<!--    <activity-->
-<!--        android:id="@+id/mainActivity"-->
-<!--        android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivity"-->
-<!--        android:label="activity_main"-->
-<!--        tools:layout="@layout/activity_main" >-->
+    <fragment
+        android:id="@+id/AddTimeslotFragment"
+        android:name="com.robotemi.BrokenRecord.BrokenRecord.AddTimeSlotFragment"
+        android:label="AddTimeslotFragment"
+        tools:layout="@layout/activity_main">
+        <action
+            android:id="@+id/AddTimeslotFragment_to_Scheduler"
+            app:destination="@id/SchedulerFragment" />
+    </fragment>
 
-<!--    </activity>-->
-<!--    <activity-->
-<!--        android:id="@+id/scheduler"-->
-<!--        android:name="com.robotemi.BrokenRecord.BrokenRecord.Scheduler"-->
-<!--        android:label="scheduler"-->
-<!--        tools:layout="@layout/scheduler" />-->
+
+    <fragment
+        android:id="@+id/AddVideosFragment"
+        android:name="com.robotemi.BrokenRecord.BrokenRecord.AddVideosFragment"
+        android:label="AddVideosFragment"
+        tools:layout="@layout/activity_main">
+        <action
+            android:id="@+id/AddVideosFragment_To_VideoFragment"
+            app:destination="@id/VideoFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/VideoFragment"
+        android:name="com.robotemi.BrokenRecord.BrokenRecord.VideosFragment"
+        android:label="VideoFragment"
+        tools:layout="@layout/activity_main">
+        <action
+            android:id="@+id/VideoFragment_To_AddVideoFragment"
+            app:destination="@id/AddVideosFragment" />
+    </fragment>
+
+    <activity
+        android:id="@+id/mainActivity"
+        android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivity"
+        android:label="activity_main"
+        tools:layout="@layout/activity_main">
+
+    </activity>
+
 
 </navigation>

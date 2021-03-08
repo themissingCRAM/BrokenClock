@@ -1,0 +1,59 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.robotemi.BrokenRecord.BrokenRecord.VideosFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorPrimaryDark"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:background="@color/colorPrimaryDark"
+            android:orientation="horizontal">
+
+<!--            <ImageButton-->
+<!--                android:id="@+id/imageButton"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="101dp"-->
+
+<!--                android:contentDescription="@string/back"-->
+<!--                app:srcCompat="@drawable/ic_back" />-->
+
+            <ImageButton
+                android:id="@+id/BackImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="101dp"
+
+                android:contentDescription="@string/back"
+                app:srcCompat="@drawable/ic_back" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="500dp"
+                android:layout_height="100dp"
+                android:autoSizeTextType="uniform"
+                android:text="@string/videos"
+                android:textColor="@color/colorWhite"
+                />
+
+            <Button
+                android:id="@+id/AddVideosButton"
+                android:layout_width="500dp"
+                android:layout_height="100dp"
+                android:text="@string/add_videos"
+                android:autoSizeTextType="uniform"/>
+
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
+</FrameLayout>
