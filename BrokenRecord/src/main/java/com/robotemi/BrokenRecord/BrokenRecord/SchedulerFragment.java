@@ -69,24 +69,15 @@ public class SchedulerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_scheduler_fragement, container, false);
+        return inflater.inflate(R.layout.fragment_scheduler, container, false);
     }
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        view.findViewById(R.id.imageButton).setOnClickListener(
-                v -> {
-                    Fragment fragment = new MainActivityFragment();
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container_view, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                }
-        );
+
         view.findViewById(R.id.AddATimeSlotButton).setOnClickListener(
                 v -> {
-                    Fragment fragment = new SchedulerFragment();
+                    Fragment fragment = new AddTimeSlotFragment();
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container_view, fragment);

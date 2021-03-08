@@ -75,7 +75,7 @@ public class AddTimeSlotFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         view.findViewById(R.id.backImageButton).setOnClickListener(
                 v -> {
-                    Fragment fragment = new MainActivityFragment();
+                    Fragment fragment = new SchedulerFragment();
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
                     fragmentTransaction.replace(R.id.fragment_container_view, fragment);

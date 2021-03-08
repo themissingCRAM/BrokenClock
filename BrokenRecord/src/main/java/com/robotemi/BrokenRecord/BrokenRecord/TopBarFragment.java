@@ -71,6 +71,7 @@ public class TopBarFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         view.findViewById(R.id.VideosButton).setOnClickListener(
                 v -> {
+                    System.out.println("Endtered Set onclicklisterner on VIdeoFragment");
                     Fragment fragment = new VideosFragment();
                     FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
                     FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();

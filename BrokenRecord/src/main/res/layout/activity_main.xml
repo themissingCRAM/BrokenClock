@@ -18,7 +18,7 @@
             android:id="@+id/fragment_container_view2"
             android:name="com.robotemi.BrokenRecord.BrokenRecord.TopBarFragment"
             android:layout_width="match_parent"
-            android:layout_height="100dp" />
+            android:layout_height="50dp" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container_view"

@@ -16,20 +16,12 @@
             android:background="@color/colorPrimaryDark"
             android:orientation="horizontal">
 
-            <ImageButton
-                android:id="@+id/imageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="101dp"
-
-                android:contentDescription="@string/back"
-                app:srcCompat="@drawable/ic_back" />
-
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="500dp"
                 android:layout_height="100dp"
-                android:autoSizeTextType="uniform"
+                app:autoSizeTextType="uniform"
                 android:text="@string/schedule"
                 android:textColor="@color/colorWhite"
               />
@@ -39,7 +31,7 @@
                 android:layout_width="500dp"
                 android:layout_height="100dp"
                 android:text="@string/add_a_TimeSlot"
-                android:autoSizeTextType="uniform"/>
+                app:autoSizeTextType="uniform"/>
         </LinearLayout>
         <LinearLayout android:layout_width="match_parent"
             android:layout_height="100dp"
@@ -48,7 +40,7 @@
             <Button
                 android:layout_width="200dp"
                 android:layout_height="100dp"
-                android:autoSizeTextType="uniform"
+                app:autoSizeTextType="uniform"
                 android:onClick="onButtonAClick"
                 android:text="@string/test_a" />
 
@@ -56,7 +48,7 @@
                 android:id="@+id/button"
                 android:layout_width="200dp"
                 android:layout_height="100dp"
-                android:autoSizeTextType="uniform"
+                app:autoSizeTextType="uniform"
                 android:onClick="onInterruptButtonClicked"
                 android:text="@string/abort_sequence" />
 
@@ -64,7 +56,7 @@
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:layout_weight="100" />
+                />
         </LinearLayout>
 
 
