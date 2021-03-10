@@ -1,12 +1,8 @@
-package com.robotemi.BrokenRecord.BrokenRecord;
+package com.robotemi.BrokenRecord.App;
 
-import android.content.Context;
 import android.os.Bundle;
 
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,22 +13,21 @@ import com.robotemi.sdk.BrokenRecord.R;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link AddTimeSlotFragment#newInstance} factory method to
+ * Use the {@link OfflineVideoViewFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class AddTimeSlotFragment extends Fragment {
+public class OfflineVideoViewFragment extends Fragment {
 
-    private MainActivityInterface mainActivity;
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-
+private MainActivityInterface mainActivity;
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
 
-    public AddTimeSlotFragment() {
+    public OfflineVideoViewFragment() {
         // Required empty public constructor
     }
 
@@ -42,11 +37,11 @@ public class AddTimeSlotFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment AddTimeslotFragment.
+     * @return A new instance of fragment MainActivityFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static AddTimeSlotFragment newInstance(String param1, String param2) {
-        AddTimeSlotFragment fragment = new AddTimeSlotFragment();
+    public static OfflineVideoViewFragment newInstance(String param1, String param2) {
+        OfflineVideoViewFragment fragment = new OfflineVideoViewFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,30 +62,12 @@ public class AddTimeSlotFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_add_timeslot, container, false);
-    }
 
 
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        view.findViewById(R.id.backImageButton).setOnClickListener(
-                v -> {
-                    Fragment fragment = new SchedulerFragment();
-                    FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
-                    FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-                    fragmentTransaction.replace(R.id.fragment_container_view, fragment);
-                    fragmentTransaction.addToBackStack(null);
-                    fragmentTransaction.commit();
-                }
-        );
-
+        return inflater.inflate(R.layout.fragment_offline_video, container, false);
     }
 
 
 
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        mainActivity = (MainActivityInterface) context;
-    }
+
 }

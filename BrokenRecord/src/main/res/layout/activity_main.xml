@@ -7,7 +7,7 @@
     android:background="@color/colorBlack"
     android:orientation="horizontal"
     android:paddingTop="70dp"
-    tools:context="com.robotemi.BrokenRecord.BrokenRecord.MainActivity">
+    tools:context="com.robotemi.BrokenRecord.App.MainActivity">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,15 +16,16 @@
         android:orientation="vertical">
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container_view2"
-            android:name="com.robotemi.BrokenRecord.BrokenRecord.TopBarFragment"
+            android:name="com.robotemi.BrokenRecord.App.TopBarFragment"
             android:layout_width="match_parent"
             android:layout_height="50dp" />
 
         <androidx.fragment.app.FragmentContainerView
             android:id="@+id/fragment_container_view"
-            android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivityFragment"
+            android:name="com.robotemi.BrokenRecord.App.OfflineVideoViewFragment"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:visibility="visible"/>
 
     </LinearLayout>
 

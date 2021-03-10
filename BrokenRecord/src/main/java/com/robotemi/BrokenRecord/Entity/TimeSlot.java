@@ -1,10 +1,11 @@
 package com.robotemi.BrokenRecord.Entity;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
 
 
-public class TimeSlot {
+public class TimeSlot implements Serializable {
 
     private GregorianCalendar dateTime;
     private ArrayList<String> locations;

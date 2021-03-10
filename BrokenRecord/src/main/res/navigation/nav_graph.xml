@@ -6,7 +6,7 @@
     app:startDestination="@id/MainActivityFragment">
     <fragment
         android:id="@+id/MainActivityFragment"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivity"
+        android:name="com.robotemi.BrokenRecord.App.MainActivity"
         android:label="goingToScheduler"
         tools:layout="@layout/activity_main">
         <action
@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SchedulerFragment"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.SchedulerFragment"
+        android:name="com.robotemi.BrokenRecord.App.SchedulerFragment"
         android:label="goingToScheduler"
         tools:layout="@layout/activity_main">
 <!--        <action-->
@@ -29,7 +29,7 @@
     </fragment>
     <fragment
         android:id="@+id/AddTimeslotFragment"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.AddTimeSlotFragment"
+        android:name="com.robotemi.BrokenRecord.App.AddTimeSlotFragment"
         android:label="AddTimeslotFragment"
         tools:layout="@layout/activity_main">
         <action
@@ -40,7 +40,7 @@
 
     <fragment
         android:id="@+id/AddVideosFragment"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.AddVideosFragment"
+        android:name="com.robotemi.BrokenRecord.App.AddVideosFragment"
         android:label="AddVideosFragment"
         tools:layout="@layout/activity_main">
         <action
@@ -50,7 +50,7 @@
 
     <fragment
         android:id="@+id/VideoFragment"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.VideosFragment"
+        android:name="com.robotemi.BrokenRecord.App.MultimediaListFragment"
         android:label="VideoFragment"
         tools:layout="@layout/activity_main">
         <action
@@ -60,7 +60,7 @@
 
     <activity
         android:id="@+id/mainActivity"
-        android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivity"
+        android:name="com.robotemi.BrokenRecord.App.MainActivity"
         android:label="activity_main"
         tools:layout="@layout/activity_main">
 

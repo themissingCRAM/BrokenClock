@@ -3,6 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.robotemi.sdk.BrokenRecord">
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
@@ -14,6 +16,15 @@
         android:supportsRtl="true"
         android:theme="@style/SkillTheme"
         tools:ignore="GoogleAppIndexingWarning">
+
+        <!--
+               Set to true if your app is Standalone, that is, it does not require the handheld
+               app to run.
+        -->
+        <meta-data
+            android:name="com.google.android.wearable.standalone"
+            android:value="true" />
+
 
         <!-- Adding this meta-data is required in order to display this app in temi's launcher app -->
         <meta-data
@@ -46,7 +57,7 @@
             android:value="com.robotemi.permission.face_recognition,                            com.robotemi.permission.map,                            com.robotemi.permission.settings,                            com.robotemi.permission.sequence" />
 
         <activity
-            android:name="com.robotemi.BrokenRecord.BrokenRecord.MainActivity"
+            android:name="com.robotemi.BrokenRecord.App.MainActivity"
             android:screenOrientation="fullSensor">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -54,7 +65,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.robotemi.BrokenRecord.App.YoutubeActivity"
+            android:label="@string/title_activity_youtube">
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
 
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
     </application>
 
 </manifest>
