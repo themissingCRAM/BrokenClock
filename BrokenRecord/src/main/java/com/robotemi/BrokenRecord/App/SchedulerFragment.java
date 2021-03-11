@@ -108,17 +108,6 @@ public class SchedulerFragment extends Fragment {
         mainActivity.onInterruptButtonClicked(v);
     }
 
-    void waitForTemiToFinishTts() {
-        mainActivity.waitForTemiToFinishTts();
-    }
-
-    boolean isSpeaking() {
-        return mainActivity.isSpeaking();
-    }
-
-    void setSpeaking(boolean speaking) {
-        mainActivity.setSpeaking(speaking);
-    }
 
 
 }

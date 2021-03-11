@@ -11,9 +11,10 @@ import java.util.HashMap;
 public class TimeSlot implements Serializable {
 
     private GregorianCalendar dateTime;
-    private ArrayList<String> locations;
-    //private ArrayList<Multimedia> multimediaLinks;
-    private HashMap<String,ArrayList<Multimedia>> locationVideos;
+    // private ArrayList<String> locations;
+
+    //locationVideos DOES NOT have home base as a location
+    private HashMap<String, Multimedia[]> locationVideos;
     private int NextLocationPointer;
     private String name;
 
@@ -21,24 +22,16 @@ public class TimeSlot implements Serializable {
 
     }
 
-//    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, ArrayList<Multimedia> videoLinks, String name) {
-//        super();
-//        this.dateTime = dateTime;
-//        this.locations = locations;
-//        this.multimediaLinks = videoLinks;
-//        this.name = name;
-//        this.setNextLocationPointer(1);
-//    }
 
-    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, String name, HashMap<String,ArrayList<Multimedia>> locationVideos) {
+    public TimeSlot(GregorianCalendar dateTime, String name, HashMap<String, Multimedia[]> locationVideos) {
         super();
         this.dateTime = dateTime;
-        this.locations = locations;
-       // this.multimediaLinks = videoLinks;
+        // this.multimediaLinks = videoLinks;
         this.name = name;
-        this.setNextLocationPointer(1);
+        this.setNextLocationPointer(0);
         this.locationVideos = locationVideos;
     }
+
     /**
      * @return gregorianCalendar object
      */
@@ -53,39 +46,26 @@ public class TimeSlot implements Serializable {
         this.dateTime = dateTime;
     }
 
-    /**
-     * @return list of points to travel to.
-     */
-    public ArrayList<String> getLocations() {
-        return locations;
-    }
-
-    /**
-     * @param locations set locations of points to travel to
-     */
-    public void setLocations(ArrayList<String> locations) {
-        this.locations = locations;
-    }
-
 //    /**
-//     * @return list of links that could be audio or video, online and offline
+//     * @return list of points to travel to.
 //     */
-//    public ArrayList<Multimedia> getMultimediaLinksLinks() {
-//        return this.multimediaLinks;
+//    public ArrayList<String> getLocations() {
+//        return locations;
 //    }
 //
 //    /**
-//     * @param  multimediaLinks list of links that could be audio or video, online and offline
+//     * @param locations set locations of points to travel to
 //     */
-//    public void setMultimediaLinksLinks(ArrayList<Multimedia> multimediaLinks) {
-//        this.multimediaLinks = multimediaLinks;
+//    public void setLocations(ArrayList<String> locations) {
+//        this.locations = locations;
 //    }
+
 
     /**
      * @return returns a number that shows which point of the
      */
     public int getNextLocationPointer() {
-        if (NextLocationPointer == locations.size())
+        if (NextLocationPointer == locationVideos.size())
             System.out.println("You are at the end of the travel sequence");
         return NextLocationPointer;
     }
@@ -113,11 +93,11 @@ public class TimeSlot implements Serializable {
     }
 
 
-    public HashMap<String, ArrayList<Multimedia>> getLocationVideos() {
+    public HashMap<String, Multimedia[]> getLocationVideos() {
         return locationVideos;
     }
 
-    public void setLocationVideos(HashMap<String, ArrayList<Multimedia>> locationVideos) {
+    public void setLocationVideos(HashMap<String, Multimedia[]> locationVideos) {
         this.locationVideos = locationVideos;
     }
 }

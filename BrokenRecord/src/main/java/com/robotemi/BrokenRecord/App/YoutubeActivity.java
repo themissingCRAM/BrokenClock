@@ -1,8 +1,6 @@
 package com.robotemi.BrokenRecord.App;
-
 import android.content.Intent;
 import android.os.Bundle;
-
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
@@ -26,17 +24,16 @@ public class YoutubeActivity extends YouTubeBaseActivity {
         YouTubePlayerView youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player);
         TimeSlot currentTimeSlot = (TimeSlot) getIntent().getSerializableExtra("currentTimeSlot");
         int volume = getIntent().getIntExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, 5);
-        System.out.println("@YoutubeActivity onCreate() Volume received: "+volume);
-        String location = currentTimeSlot.getLocations().get(currentTimeSlot.getNextLocationPointer());
-        System.out.println("Location: "+location);
+        System.out.println("@YoutubeActivity onCreate() Volume received: " + volume);
 
-
-        final ArrayList<Multimedia> medias = currentTimeSlot.getLocationVideos().get(location);
+        String locationName = MainActivity.findLocationWithPointerNumber(currentTimeSlot, currentTimeSlot.getNextLocationPointer());
+        System.out.println("Location: " + locationName);
+        final Multimedia[] medias = currentTimeSlot.getLocationVideos().get(locationName);
         System.out.println("List of media at this location");
-        for(Multimedia media: medias){
+        for (Multimedia media : medias) {
             System.out.println(media.getName());
         }
-        final int mediasLength = medias.size();
+        final int mediasLength = medias.length;
 
         YouTubePlayer.OnInitializedListener onInitializedListener = new YouTubePlayer.OnInitializedListener() {
             @Override
@@ -50,6 +47,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                 youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                 youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                     private int j = 0;
+
                     @Override
                     public void onLoading() {
 
@@ -79,14 +77,12 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                             Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                             intent.putExtra(MainActivity.CURRENTTIMESLOT, currentTimeSlot);
                             intent.putExtra(ISFINISHED, true);
-                            intent.putExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO,volume);
-
+                            intent.putExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, volume);
                             startActivity(intent);
-
                             finish();
 
                         } else {
-                            youTubePlayer.loadVideo(medias.get(j).getMultiMediaLink());
+                            youTubePlayer.loadVideo(medias[j].getMultiMediaLink());
                             youTubePlayer.play();
 
                         }
@@ -99,7 +95,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                     }
                 });
 
-                youTubePlayer.loadVideo(medias.get(0).getMultiMediaLink());
+                youTubePlayer.loadVideo(medias[0].getMultiMediaLink());
                 youTubePlayer.play();
 
             }

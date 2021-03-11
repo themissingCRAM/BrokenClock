@@ -15,7 +15,6 @@ import androidx.core.app.ActivityCompat;
 import com.robotemi.BrokenRecord.Entity.Multimedia;
 import com.robotemi.BrokenRecord.Entity.TimeSlot;
 import com.robotemi.BrokenRecord.Enumeration.MediaType;
-import com.robotemi.BrokenRecord.GoogleAPIKey.KeyForYoutube;
 import com.robotemi.BrokenRecord.Interface.MainActivityInterface;
 import com.robotemi.sdk.BrokenRecord.R;
 import com.robotemi.sdk.Robot;
@@ -26,22 +25,16 @@ import com.robotemi.sdk.permission.Permission;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.sql.Time;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.HashMap;
-import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static com.robotemi.sdk.permission.Permission.SETTINGS;
 
 
 public class MainActivity extends AppCompatActivity implements OnRobotReadyListener,
         OnGoToLocationStatusChangedListener,
-        Robot.TtsListener,
-        MainActivityInterface {
+        Robot.TtsListener, MainActivityInterface {
 
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -57,7 +50,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     private Robot robot;
     private Thread sequenceThread;
     private TimeSlot currentTimeSlot;
-    private boolean isSpeaking = false;
+    private volatile boolean isSpeaking = false;
     private final String HOME_BASE = "home base";
     private int previousVolumeBeforePlayingVideo;
 
@@ -107,7 +100,8 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
         Intent intent = getIntent();
         if (intent.hasExtra("isFinished")) {
-            Boolean isFinished = (Boolean) intent.getExtras().get("isFinished");
+
+            Boolean isFinished = (Boolean) Objects.requireNonNull(intent.getExtras()).get("isFinished");
             if (isFinished) {
                 System.out.println("under is finished  if block");
                 currentTimeSlot = (TimeSlot) intent.getSerializableExtra(CURRENTTIMESLOT);
@@ -166,26 +160,22 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     //For Ryan's own testing purposes
     public void onButtonAClick(View v) {
         robot.addOnGoToLocationStatusChangedListener(this);
-        List<String> locations = new ArrayList<>(robot.getLocations());
-        locations.remove(HOME_BASE);
-        Collections.sort(locations);
-        locations.add(0, HOME_BASE);
+//        List<String> locations = new ArrayList<>(robot.getLocations());
+//        locations.remove(HOME_BASE);
+//        Collections.sort(locations);
+//        locations.add(0, HOME_BASE);
 
         Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
                 MediaType.video, true);
         Multimedia japan = new Multimedia("8EGliGWfuNI", "Japanese sound effect 2",
                 MediaType.video, true);
 
-        ArrayList<Multimedia> links1 = new ArrayList<>();
-        links1.add(bruh);
-        links1.add(japan);
-        ArrayList<Multimedia> links2 = new ArrayList<>();
-        links2.add(bruh);
-        HashMap<String,ArrayList<Multimedia>> videosLocations = new HashMap<>();
-        videosLocations.put("1",links1);
-        videosLocations.put("2",links2);
 
-        currentTimeSlot = new TimeSlot(new GregorianCalendar(), new ArrayList<>(locations), "test",videosLocations);
+        HashMap<String,Multimedia[]> videosLocations = new HashMap<>();
+        videosLocations.put("1", new Multimedia[]{bruh, japan});
+        videosLocations.put("2",new Multimedia[]{bruh});
+
+        currentTimeSlot = new TimeSlot(new GregorianCalendar(), "test",videosLocations);
 
         initialSequence();
 
@@ -207,11 +197,13 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         String text = "Starting timeSlot Session";
         System.out.println(text);
         // nextLocationPointer is already set in the TimeSlot Constructor
-        int nextLocationPointer = 1;
+
         sequenceThread = new Thread(() -> {
             TtsRequest ttsRequest = TtsRequest.create(text, true);
             robot.speak(ttsRequest);
-            robot.goTo(currentTimeSlot.getLocations().get(nextLocationPointer));
+
+            String locationName = findLocationWithPointerNumber(currentTimeSlot,currentTimeSlot.getNextLocationPointer());
+            robot.goTo(locationName);
         });
         sequenceThread.start();
 
@@ -227,12 +219,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             sequenceThread.interrupt();
         }
         sequenceThread = new Thread(() -> {
-
-
             TtsRequest request = TtsRequest.create("Hi here are some educational videos to watch ", true);
             robot.speak(request);
             waitForTemiToFinishTts();
-
             this.previousVolumeBeforePlayingVideo = robot.getVolume();
             robot.setVolume(9);
             Intent intent = new Intent(getApplicationContext(), YoutubeActivity.class);
@@ -252,14 +241,14 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         sequenceThread = new Thread(() -> {
             int previousLocation = currentTimeSlot.getNextLocationPointer();
             int nextLocationPointer = previousLocation + 1;
-            if (nextLocationPointer < currentTimeSlot.getLocations().size()) {
+            if (nextLocationPointer < currentTimeSlot.getLocationVideos().size()) {
                 currentTimeSlot.setNextLocationPointer(nextLocationPointer);
-                String currentLocationName = currentTimeSlot.getLocations().get(nextLocationPointer);
-                System.out.println("next, I am going to location: " + currentLocationName);
+                String locationName = findLocationWithPointerNumber(currentTimeSlot,nextLocationPointer);
+                System.out.println("next, I am going to location: " + locationName);
                 String thankYouText = "Thank you for your time";
                 TtsRequest ttsRequest = TtsRequest.create(thankYouText, true);
                 robot.speak(ttsRequest);
-                robot.goTo(currentLocationName);
+                robot.goTo(locationName);
             } else {
                 // nextLocationPointer == testTimeSlot.getLocations().size() means sequence is completed
                 TtsRequest ttsRequest = TtsRequest.create("Sequence complete, going back to home base", true);
@@ -277,23 +266,28 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     @Override
     public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
         if (ttsRequest.getStatus().equals(TtsRequest.Status.COMPLETED)) {
-            setSpeaking(false);
+            isSpeaking=false;
         }
     }
 
 
-    public void waitForTemiToFinishTts() {
-        setSpeaking(true); // start of speech
+    protected void waitForTemiToFinishTts() {
+       isSpeaking=true; // start of speech
         while (isSpeaking) {
+
         }
     }
 
 
-    public boolean isSpeaking() {
-        return isSpeaking;
-    }
-
-    public void setSpeaking(boolean speaking) {
-        isSpeaking = speaking;
+    protected static String findLocationWithPointerNumber(TimeSlot currentTimeSlot,int nextLocationPointer) {
+        String locationName = "";
+        int i = 0;
+        for (String key : currentTimeSlot.getLocationVideos().keySet()) {
+            if (i == nextLocationPointer) {
+                locationName = key;
+            }
+            i++;
+        }
+        return locationName;
     }
 }
