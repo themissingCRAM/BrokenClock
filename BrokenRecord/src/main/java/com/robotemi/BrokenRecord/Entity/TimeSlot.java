@@ -1,16 +1,19 @@
 package com.robotemi.BrokenRecord.Entity;
 
 import java.io.Serializable;
+import java.lang.reflect.Array;
+import java.lang.reflect.Member;
 import java.util.ArrayList;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 
 
 public class TimeSlot implements Serializable {
 
     private GregorianCalendar dateTime;
     private ArrayList<String> locations;
-    private ArrayList<Multimedia> multimediaLinks;
-
+    //private ArrayList<Multimedia> multimediaLinks;
+    private HashMap<String,ArrayList<Multimedia>> locationVideos;
     private int NextLocationPointer;
     private String name;
 
@@ -18,16 +21,24 @@ public class TimeSlot implements Serializable {
 
     }
 
-    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, ArrayList<Multimedia> videoLinks, String name) {
+//    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, ArrayList<Multimedia> videoLinks, String name) {
+//        super();
+//        this.dateTime = dateTime;
+//        this.locations = locations;
+//        this.multimediaLinks = videoLinks;
+//        this.name = name;
+//        this.setNextLocationPointer(1);
+//    }
+
+    public TimeSlot(GregorianCalendar dateTime, ArrayList<String> locations, String name, HashMap<String,ArrayList<Multimedia>> locationVideos) {
         super();
         this.dateTime = dateTime;
         this.locations = locations;
-        this.multimediaLinks = videoLinks;
+       // this.multimediaLinks = videoLinks;
         this.name = name;
         this.setNextLocationPointer(1);
+        this.locationVideos = locationVideos;
     }
-
-
     /**
      * @return gregorianCalendar object
      */
@@ -56,19 +67,19 @@ public class TimeSlot implements Serializable {
         this.locations = locations;
     }
 
-    /**
-     * @return list of links that could be audio or video, online and offline
-     */
-    public ArrayList<Multimedia> getMultimediaLinksLinks() {
-        return this.multimediaLinks;
-    }
-
-    /**
-     * @param  multimediaLinks list of links that could be audio or video, online and offline
-     */
-    public void setMultimediaLinksLinks(ArrayList<Multimedia> multimediaLinks) {
-        this.multimediaLinks = multimediaLinks;
-    }
+//    /**
+//     * @return list of links that could be audio or video, online and offline
+//     */
+//    public ArrayList<Multimedia> getMultimediaLinksLinks() {
+//        return this.multimediaLinks;
+//    }
+//
+//    /**
+//     * @param  multimediaLinks list of links that could be audio or video, online and offline
+//     */
+//    public void setMultimediaLinksLinks(ArrayList<Multimedia> multimediaLinks) {
+//        this.multimediaLinks = multimediaLinks;
+//    }
 
     /**
      * @return returns a number that shows which point of the
@@ -102,4 +113,11 @@ public class TimeSlot implements Serializable {
     }
 
 
+    public HashMap<String, ArrayList<Multimedia>> getLocationVideos() {
+        return locationVideos;
+    }
+
+    public void setLocationVideos(HashMap<String, ArrayList<Multimedia>> locationVideos) {
+        this.locationVideos = locationVideos;
+    }
 }

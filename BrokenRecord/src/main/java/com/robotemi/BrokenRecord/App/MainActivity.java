@@ -30,9 +30,12 @@ import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.GregorianCalendar;
+import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+
+import static com.robotemi.sdk.permission.Permission.SETTINGS;
 
 
 public class MainActivity extends AppCompatActivity implements OnRobotReadyListener,
@@ -44,11 +47,12 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
     private static final String[] PERMISSIONS_STORAGE = {
             Manifest.permission.READ_EXTERNAL_STORAGE,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
     };
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
     public static final String PREVIOUSVOLUMEBEFOREPLAYINGVIDEO = "previousVolumeBeforePlayingVideo";
     public static final String CURRENTTIMESLOT = "currentTimeSlot";
+
 
     private Robot robot;
     private Thread sequenceThread;
@@ -95,6 +99,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         setContentView(R.layout.activity_main);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
         verifyStoragePermissions(this);
+        // robot.requestPermissions(new ArrayList<>(Collections.singleton(SETTINGS)), Permission.GRANTED);
+
+        //TODO: Volume adjusting not working
         robot = Robot.getInstance(); // get an instance of the robot in order to begin using its features.
 
 
@@ -103,13 +110,14 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             Boolean isFinished = (Boolean) intent.getExtras().get("isFinished");
             if (isFinished) {
                 System.out.println("under is finished  if block");
-                currentTimeSlot = (TimeSlot) intent.getSerializableExtra("currentTimeSlot");
+                currentTimeSlot = (TimeSlot) intent.getSerializableExtra(CURRENTTIMESLOT);
+
                 afterVideosPlayed();
                 robot.addOnRobotReadyListener(this);
                 robot.addOnGoToLocationStatusChangedListener(this);
                 robot.addTtsListener(this);
-                robot.setVolume(intent.getIntExtra(PREVIOUSVOLUMEBEFOREPLAYINGVIDEO,5));
-                System.out.println("Volume after coming from Youtube Activity: "+robot.getVolume());
+                robot.setVolume(intent.getIntExtra(PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, 5));
+                System.out.println("Volume after coming from Youtube Activity: " + robot.getVolume());
             }
 
         }
@@ -157,27 +165,31 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
     //For Ryan's own testing purposes
     public void onButtonAClick(View v) {
-        if (sequenceThread == null) {
-            robot.addOnGoToLocationStatusChangedListener(this);
-            List<String> locations = new ArrayList<>(robot.getLocations());
-            locations.remove(HOME_BASE);
-            Collections.sort(locations);
-            locations.add(0, HOME_BASE);
+        robot.addOnGoToLocationStatusChangedListener(this);
+        List<String> locations = new ArrayList<>(robot.getLocations());
+        locations.remove(HOME_BASE);
+        Collections.sort(locations);
+        locations.add(0, HOME_BASE);
 
-            Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
-                    MediaType.video, true);
-            Multimedia japan = new Multimedia("8EGliGWfuNI", "Japanese sound effect 2",
-                    MediaType.video, true);
+        Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
+                MediaType.video, true);
+        Multimedia japan = new Multimedia("8EGliGWfuNI", "Japanese sound effect 2",
+                MediaType.video, true);
 
-            ArrayList<Multimedia> links = new ArrayList<>();
-            links.add(bruh);
-            links.add(japan);
-            currentTimeSlot = new TimeSlot(new GregorianCalendar(), new ArrayList<>(locations), links, "test");
+        ArrayList<Multimedia> links1 = new ArrayList<>();
+        links1.add(bruh);
+        links1.add(japan);
+        ArrayList<Multimedia> links2 = new ArrayList<>();
+        links2.add(bruh);
+        HashMap<String,ArrayList<Multimedia>> videosLocations = new HashMap<>();
+        videosLocations.put("1",links1);
+        videosLocations.put("2",links2);
 
-            initialSequence();
+        currentTimeSlot = new TimeSlot(new GregorianCalendar(), new ArrayList<>(locations), "test",videosLocations);
 
-        }
-        assert sequenceThread != null : "This is a bug";
+        initialSequence();
+
+
     }
 
     public void onInterruptButtonClicked(View v) {
@@ -191,6 +203,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     }
 
     public void initialSequence() {
+        assert sequenceThread == null : "SequenceThead should be null";
         String text = "Starting timeSlot Session";
         System.out.println(text);
         // nextLocationPointer is already set in the TimeSlot Constructor
@@ -206,7 +219,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
     @Override
     public void onGoToLocationStatusChanged(@NotNull String s, @NotNull String s1, int i, @NotNull String s2) {
-        System.out.println("############# OnGoToLocationStatusChangedListener");
+        //  System.out.println("############# OnGoToLocationStatusChangedListener");
         if (!s1.equals(OnGoToLocationStatusChangedListener.COMPLETE)) {
             return;
         }

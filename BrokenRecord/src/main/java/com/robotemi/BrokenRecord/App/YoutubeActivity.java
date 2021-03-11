@@ -27,7 +27,15 @@ public class YoutubeActivity extends YouTubeBaseActivity {
         TimeSlot currentTimeSlot = (TimeSlot) getIntent().getSerializableExtra("currentTimeSlot");
         int volume = getIntent().getIntExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, 5);
         System.out.println("@YoutubeActivity onCreate() Volume received: "+volume);
-        final ArrayList<Multimedia> medias = currentTimeSlot.getMultimediaLinksLinks();
+        String location = currentTimeSlot.getLocations().get(currentTimeSlot.getNextLocationPointer());
+        System.out.println("Location: "+location);
+
+
+        final ArrayList<Multimedia> medias = currentTimeSlot.getLocationVideos().get(location);
+        System.out.println("List of media at this location");
+        for(Multimedia media: medias){
+            System.out.println(media.getName());
+        }
         final int mediasLength = medias.size();
 
         YouTubePlayer.OnInitializedListener onInitializedListener = new YouTubePlayer.OnInitializedListener() {
@@ -39,6 +47,7 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                 }
                 youTubePlayer.loadVideos(videoIds);
                 youTubePlayer.setFullscreen(true);
+                youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                 youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                     private int j = 0;
                     @Override
@@ -71,8 +80,11 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                             intent.putExtra(MainActivity.CURRENTTIMESLOT, currentTimeSlot);
                             intent.putExtra(ISFINISHED, true);
                             intent.putExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO,volume);
+
                             startActivity(intent);
+
                             finish();
+
                         } else {
                             youTubePlayer.loadVideo(medias.get(j).getMultiMediaLink());
                             youTubePlayer.play();
