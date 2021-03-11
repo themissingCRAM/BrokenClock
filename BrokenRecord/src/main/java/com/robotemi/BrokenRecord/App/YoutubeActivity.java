@@ -13,29 +13,34 @@ import com.robotemi.BrokenRecord.GoogleAPIKey.KeyForYoutube;
 import com.robotemi.sdk.BrokenRecord.R;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class YoutubeActivity extends YouTubeBaseActivity {
-
-    private YouTubePlayer youTubePlayer;
+    private static final String ISFINISHED = "isFinished";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_youtube);
 
-
         YouTubePlayerView youTubePlayerView = (YouTubePlayerView) findViewById(R.id.youtube_player);
-        Intent intent = getIntent();
-        TimeSlot currentTimeSlot = (TimeSlot) intent.getSerializableExtra("currentTimeSlot");
-        Multimedia media = currentTimeSlot.getMultimediaLinksLinks().get(0);
-        if (!media.isOnline()) {
-            throw new IllegalStateException("multimedia should be online to play on youtube");
-        }
+        TimeSlot currentTimeSlot = (TimeSlot) getIntent().getSerializableExtra("currentTimeSlot");
+        int volume = getIntent().getIntExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, 5);
+        System.out.println("@YoutubeActivity onCreate() Volume received: "+volume);
+        final ArrayList<Multimedia> medias = currentTimeSlot.getMultimediaLinksLinks();
+        final int mediasLength = medias.size();
+
         YouTubePlayer.OnInitializedListener onInitializedListener = new YouTubePlayer.OnInitializedListener() {
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                setYouTubePlayer(youTubePlayer);
-                getYouTubePlayer().setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                List<String> videoIds = new ArrayList<>();
+                for (Multimedia media : medias) {
+                    videoIds.add(media.getMultiMediaLink());
+                }
+                youTubePlayer.loadVideos(videoIds);
+                youTubePlayer.setFullscreen(true);
+                youTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+                    private int j = 0;
                     @Override
                     public void onLoading() {
 
@@ -59,12 +64,21 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                     @Override
                     public void onVideoEnded() {
                         System.out.println("Video has ended.");
-                        youTubePlayer.release();
-                        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-                        intent.putExtra("currentTimeSlot", currentTimeSlot);
-                        intent.putExtra("isFinished",true);
-                        startActivity(intent);
-                        finish();
+                        j++;
+                        if (j >= mediasLength) {
+                            youTubePlayer.release();
+                            Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                            intent.putExtra(MainActivity.CURRENTTIMESLOT, currentTimeSlot);
+                            intent.putExtra(ISFINISHED, true);
+                            intent.putExtra(MainActivity.PREVIOUSVOLUMEBEFOREPLAYINGVIDEO,volume);
+                            startActivity(intent);
+                            finish();
+                        } else {
+                            youTubePlayer.loadVideo(medias.get(j).getMultiMediaLink());
+                            youTubePlayer.play();
+
+                        }
+
                     }
 
                     @Override
@@ -72,8 +86,9 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                         System.err.println(errorReason.toString());
                     }
                 });
-                getYouTubePlayer().loadVideo(media.getMultiMediaLink());
-                getYouTubePlayer().play();
+
+                youTubePlayer.loadVideo(medias.get(0).getMultiMediaLink());
+                youTubePlayer.play();
 
             }
 
@@ -86,21 +101,4 @@ public class YoutubeActivity extends YouTubeBaseActivity {
         youTubePlayerView.initialize(KeyForYoutube.API_KEY, onInitializedListener);
 
     }
-
-
-//    public void playVideo(ArrayList<Multimedia> links){
-//       // String bruhSoundEffect2 = "2ZIpFytCSVc";
-//        for(Multimedia link: links) {
-//
-//        }
-//    }
-
-    public YouTubePlayer getYouTubePlayer() {
-        return youTubePlayer;
-    }
-
-    public void setYouTubePlayer(YouTubePlayer youTubePlayer) {
-        this.youTubePlayer = youTubePlayer;
-    }
-
 }

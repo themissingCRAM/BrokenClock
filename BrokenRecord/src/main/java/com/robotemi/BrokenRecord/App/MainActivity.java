@@ -46,12 +46,17 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             Manifest.permission.READ_EXTERNAL_STORAGE,
             Manifest.permission.WRITE_EXTERNAL_STORAGE
     };
-    private Robot robot;
     private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+    public static final String PREVIOUSVOLUMEBEFOREPLAYINGVIDEO = "previousVolumeBeforePlayingVideo";
+    public static final String CURRENTTIMESLOT = "currentTimeSlot";
+
+    private Robot robot;
     private Thread sequenceThread;
     private TimeSlot currentTimeSlot;
     private boolean isSpeaking = false;
     private final String HOME_BASE = "home base";
+    private int previousVolumeBeforePlayingVideo;
+
 
     /**
      * Setting up all the event listeners
@@ -75,6 +80,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         robot.removeTtsListener(this);
         robot.removeOnGoToLocationStatusChangedListener(this);
 
+        sequenceThread = null;
         robot.stopMovement();
         if (robot.checkSelfPermission(Permission.FACE_RECOGNITION) == Permission.GRANTED) {
             robot.stopFaceRecognition();
@@ -102,6 +108,8 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
                 robot.addOnRobotReadyListener(this);
                 robot.addOnGoToLocationStatusChangedListener(this);
                 robot.addTtsListener(this);
+                robot.setVolume(intent.getIntExtra(PREVIOUSVOLUMEBEFOREPLAYINGVIDEO,5));
+                System.out.println("Volume after coming from Youtube Activity: "+robot.getVolume());
             }
 
         }
@@ -146,16 +154,6 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         }
     }
 
-    //
-//    /**
-//     * Have the robot speak while displaying what is being said.
-//     */
-//    public void speak(View view) {
-////        TtsRequest ttsRequest = TtsRequest.create(etSpeak.getText().toString().trim(), true);
-////        robot.speak(ttsRequest);
-//        hideKeyboard();
-//    }
-
 
     //For Ryan's own testing purposes
     public void onButtonAClick(View v) {
@@ -168,8 +166,12 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
             Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
                     MediaType.video, true);
+            Multimedia japan = new Multimedia("8EGliGWfuNI", "Japanese sound effect 2",
+                    MediaType.video, true);
+
             ArrayList<Multimedia> links = new ArrayList<>();
             links.add(bruh);
+            links.add(japan);
             currentTimeSlot = new TimeSlot(new GregorianCalendar(), new ArrayList<>(locations), links, "test");
 
             initialSequence();
@@ -204,7 +206,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
     @Override
     public void onGoToLocationStatusChanged(@NotNull String s, @NotNull String s1, int i, @NotNull String s2) {
-System.out.println("############# OnGoToLocationStatusChangedListener");
+        System.out.println("############# OnGoToLocationStatusChangedListener");
         if (!s1.equals(OnGoToLocationStatusChangedListener.COMPLETE)) {
             return;
         }
@@ -217,13 +219,12 @@ System.out.println("############# OnGoToLocationStatusChangedListener");
             TtsRequest request = TtsRequest.create("Hi here are some educational videos to watch ", true);
             robot.speak(request);
             waitForTemiToFinishTts();
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException ignored) {
-            }
 
+            this.previousVolumeBeforePlayingVideo = robot.getVolume();
+            robot.setVolume(9);
             Intent intent = new Intent(getApplicationContext(), YoutubeActivity.class);
-            intent.putExtra("currentTimeSlot", currentTimeSlot);
+            intent.putExtra(CURRENTTIMESLOT, currentTimeSlot);
+            intent.putExtra(PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, previousVolumeBeforePlayingVideo);
             startActivity(intent);
             sequenceThread.interrupt();
             sequenceThread = null;
@@ -235,8 +236,6 @@ System.out.println("############# OnGoToLocationStatusChangedListener");
 
     public void afterVideosPlayed() {
         assert sequenceThread == null : "Sequence Thread is not null";
-
-
         sequenceThread = new Thread(() -> {
             int previousLocation = currentTimeSlot.getNextLocationPointer();
             int nextLocationPointer = previousLocation + 1;
@@ -252,25 +251,18 @@ System.out.println("############# OnGoToLocationStatusChangedListener");
                 // nextLocationPointer == testTimeSlot.getLocations().size() means sequence is completed
                 TtsRequest ttsRequest = TtsRequest.create("Sequence complete, going back to home base", true);
                 robot.speak(ttsRequest);
-                waitForTemiToFinishTts();
                 robot.goTo(HOME_BASE);
                 robot.removeOnGoToLocationStatusChangedListener(this);
                 sequenceThread.interrupt();
                 sequenceThread = null;
             }
-            try {
-                Thread.sleep(500);
-            } catch (
-                    InterruptedException e) {
-                e.printStackTrace();
-            }
+
         });
         sequenceThread.start();
     }
 
     @Override
     public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
-        System.out.println("onTtStatusChange: " + ttsRequest.getStatus());
         if (ttsRequest.getStatus().equals(TtsRequest.Status.COMPLETED)) {
             setSpeaking(false);
         }
@@ -279,10 +271,8 @@ System.out.println("############# OnGoToLocationStatusChangedListener");
 
     public void waitForTemiToFinishTts() {
         setSpeaking(true); // start of speech
-        System.out.println("In the middle of a speech");
         while (isSpeaking) {
         }
-        System.out.println("End of Speech");
     }
 
 
