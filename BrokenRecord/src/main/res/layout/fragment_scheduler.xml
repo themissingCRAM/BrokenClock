@@ -69,6 +69,7 @@
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
                 android:layout_height="0dp" />
+
         </LinearLayout>
 
         <Button
@@ -77,8 +78,8 @@
             android:layout_height="100dp"
             android:text="@string/add_a_TimeSlot"
             app:autoSizeTextType="uniform"
-            tools:layout_editor_absoluteX="65dp"
-            tools:layout_editor_absoluteY="275dp" />
+            tools:layout_editor_absoluteX="70dp"
+            tools:layout_editor_absoluteY="335dp" />
 
         <Button
             android:id="@+id/button"
@@ -88,7 +89,17 @@
             android:text="@string/abort_sequence"
             app:autoSizeTextType="uniform"
             tools:layout_editor_absoluteX="220dp"
-            tools:layout_editor_absoluteY="415dp" />
+            tools:layout_editor_absoluteY="465dp" />
+
+        <Button
+            android:id="@+id/TestA"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:onClick="onButtonAClick"
+            android:text="Test A"
+            app:autoSizeTextType="uniform"
+            tools:layout_editor_absoluteX="10dp"
+            tools:layout_editor_absoluteY="195dp" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
