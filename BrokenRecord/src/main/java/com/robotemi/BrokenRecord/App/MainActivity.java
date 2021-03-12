@@ -179,6 +179,33 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
 
         initialSequence();
 
+    }
+
+    public void onClickBedButton(View v) {
+        robot.addOnGoToLocationStatusChangedListener(this);
+        String bedId = (String) v.getResources().getResourceName(v.getId());
+        bedId = bedId.split("/")[1];
+        String bedNumber = bedId.replaceAll("[^\\d.]","");
+//        System.out.println(bedNumber);
+//        robot.goTo(bedNumber);
+
+
+        //        List<String> locations = new ArrayList<>(robot.getLocations());
+//        locations.remove(HOME_BASE);
+//        Collections.sort(locations);
+//        locations.add(0, HOME_BASE);
+//
+        Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
+                MediaType.video, true);
+        Multimedia smile = new Multimedia("6VJSG5gRWiY", "Smile Emoji",
+                MediaType.video, true);
+//
+//
+        HashMap<String,Multimedia[]> videosLocations = new HashMap<>();
+        videosLocations.put(bedNumber, new Multimedia[]{bruh, smile});
+        currentTimeSlot = new TimeSlot(new GregorianCalendar(), "test",videosLocations);
+
+        initialSequence();
 
     }
 
