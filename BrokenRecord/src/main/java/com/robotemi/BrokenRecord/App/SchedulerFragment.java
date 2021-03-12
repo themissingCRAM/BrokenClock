@@ -99,6 +99,7 @@ public class SchedulerFragment extends Fragment {
         super.onDetach();
         mainActivity = null;
     }
+    void onClickBedButton(View view) { mainActivity.onClickBedButton(view); }
 
     void onButtonAClick(View view) {
         mainActivity.onButtonAClick(view);

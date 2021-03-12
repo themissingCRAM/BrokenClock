@@ -4,63 +4,105 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.robotemi.BrokenRecord.App.SchedulerFragment">
-    <LinearLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/colorPrimaryDark"
-        android:orientation="vertical">
+        android:background="@color/colorPrimaryDark">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:id="@+id/linearLayout2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:orientation="horizontal">
+            android:orientation="horizontal"
+            app:layout_constraintStart_toStartOf="@+id/linearLayout3"
+            app:layout_constraintTop_toTopOf="parent">
 
 
             <TextView
                 android:id="@+id/textView2"
                 android:layout_width="500dp"
                 android:layout_height="100dp"
-                app:autoSizeTextType="uniform"
-                android:text="@string/schedule"
+                android:text="Select A Bed"
                 android:textColor="@color/colorWhite"
-              />
+                app:autoSizeTextType="uniform" />
 
-            <Button
-                android:id="@+id/AddATimeSlotButton"
-                android:layout_width="500dp"
-                android:layout_height="100dp"
-                android:text="@string/add_a_TimeSlot"
-                app:autoSizeTextType="uniform"/>
         </LinearLayout>
-        <LinearLayout android:layout_width="match_parent"
-            android:layout_height="100dp"
+
+        <LinearLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:background="@color/colorPrimaryDark"
-            android:orientation="horizontal">
-            <Button
-                android:layout_width="200dp"
-                android:layout_height="100dp"
-                app:autoSizeTextType="uniform"
-                android:onClick="onButtonAClick"
-                android:text="@string/test_a" />
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout2">
 
             <Button
-                android:id="@+id/button"
+                android:id="@+id/BED1"
                 android:layout_width="200dp"
                 android:layout_height="100dp"
-                app:autoSizeTextType="uniform"
-                android:onClick="onInterruptButtonClicked"
-                android:text="@string/abort_sequence" />
+                android:onClick="onClickBedButton"
+                android:text="Bed 1"
+                app:autoSizeTextType="uniform" />
+
+            <Button
+                android:id="@+id/BED2"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:onClick="onClickBedButton"
+                android:text="Bed 2"
+                app:autoSizeTextType="uniform" />
+
+            <Button
+                android:id="@+id/BED3"
+                android:layout_width="200dp"
+                android:layout_height="100dp"
+                android:onClick="onClickBedButton"
+                android:text="Bed 3"
+                app:autoSizeTextType="uniform" />
 
             <CalendarView
                 android:id="@+id/calendarView"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                />
+                android:layout_height="0dp" />
+
         </LinearLayout>
 
+        <Button
+            android:id="@+id/AddATimeSlotButton"
+            android:layout_width="500dp"
+            android:layout_height="100dp"
+            android:text="@string/add_a_TimeSlot"
+            app:autoSizeTextType="uniform"
+            tools:layout_editor_absoluteX="70dp"
+            tools:layout_editor_absoluteY="335dp" />
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/button"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:onClick="onInterruptButtonClicked"
+            android:text="@string/abort_sequence"
+            app:autoSizeTextType="uniform"
+            tools:layout_editor_absoluteX="220dp"
+            tools:layout_editor_absoluteY="465dp" />
+
+        <Button
+            android:id="@+id/TestA"
+            android:layout_width="200dp"
+            android:layout_height="100dp"
+            android:onClick="onButtonAClick"
+            android:text="Test A"
+            app:autoSizeTextType="uniform"
+            tools:layout_editor_absoluteX="10dp"
+            tools:layout_editor_absoluteY="195dp" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 
