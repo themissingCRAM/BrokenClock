@@ -52,7 +52,6 @@ public class YoutubeActivity extends YouTubeBaseActivity {
                     public void onLoading() {
 
                     }
-
                     @Override
                     public void onLoaded(String s) {
 
