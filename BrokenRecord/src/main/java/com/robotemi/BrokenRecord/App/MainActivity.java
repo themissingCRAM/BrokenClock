@@ -14,7 +14,7 @@ import androidx.core.app.ActivityCompat;
 
 import com.robotemi.BrokenRecord.Entity.Multimedia;
 import com.robotemi.BrokenRecord.Entity.TimeSlot;
-import com.robotemi.BrokenRecord.Enumeration.MediaType;
+import com.robotemi.BrokenRecord.Entity.YouTubeVideo;
 import com.robotemi.BrokenRecord.Interface.MainActivityInterface;
 import com.robotemi.sdk.BrokenRecord.R;
 import com.robotemi.sdk.Robot;
@@ -160,22 +160,19 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     //For Ryan's own testing purposes
     public void onButtonAClick(View v) {
         robot.addOnGoToLocationStatusChangedListener(this);
-//        List<String> locations = new ArrayList<>(robot.getLocations());
-//        locations.remove(HOME_BASE);
-//        Collections.sort(locations);
-//        locations.add(0, HOME_BASE);
 
-        Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
-                MediaType.video, true);
-        Multimedia japan = new Multimedia("8EGliGWfuNI", "Japanese sound effect 2",
-                MediaType.video, true);
+//        Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
+////                MediaType.video, true);
+//        Multimedia japan = new Multimedia("8EGliGWfuNI", "Japanese sound effect 2",
+//                MediaType.video, true);
+        YouTubeVideo bruh = new YouTubeVideo("Brush sound effect 2", "2ZIpFytCSVc");
+        YouTubeVideo japan = new YouTubeVideo("Japan sound effect", "8EGliGWfuNI");
 
+        HashMap<String, Multimedia[]> videosLocations = new HashMap<>();
+        videosLocations.put("1", new YouTubeVideo[]{bruh, japan});
+        videosLocations.put("2", new YouTubeVideo[]{bruh});
 
-        HashMap<String,Multimedia[]> videosLocations = new HashMap<>();
-        videosLocations.put("1", new Multimedia[]{bruh, japan});
-        videosLocations.put("2",new Multimedia[]{bruh});
-
-        currentTimeSlot = new TimeSlot(new GregorianCalendar(), "test",videosLocations);
+        currentTimeSlot = new TimeSlot(new GregorianCalendar(), "test", videosLocations);
 
         initialSequence();
 
@@ -185,25 +182,22 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
         robot.addOnGoToLocationStatusChangedListener(this);
         String bedId = (String) v.getResources().getResourceName(v.getId());
         bedId = bedId.split("/")[1];
-        String bedNumber = bedId.replaceAll("[^\\d.]","");
+        String bedNumber = bedId.replaceAll("[^\\d.]", "");
 //        System.out.println(bedNumber);
 //        robot.goTo(bedNumber);
 
+//        Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
+////                MediaType.video, true);
+////        Multimedia smile = new Multimedia("PUroX5MX3xk", "Smile Emoji",
+////                MediaType.video, true);
 
-        //        List<String> locations = new ArrayList<>(robot.getLocations());
-//        locations.remove(HOME_BASE);
-//        Collections.sort(locations);
-//        locations.add(0, HOME_BASE);
-//
-        Multimedia bruh = new Multimedia("2ZIpFytCSVc", "Brush sound effect 2",
-                MediaType.video, true);
-        Multimedia smile = new Multimedia("PUroX5MX3xk", "Smile Emoji",
-                MediaType.video, true);
+        YouTubeVideo bruh = new YouTubeVideo("Brush sound effect 2", "2ZIpFytCSVc");
+        YouTubeVideo smile = new YouTubeVideo("Smily emoji", "PUroX5MX3xk");
 //
 //
-        HashMap<String,Multimedia[]> videosLocations = new HashMap<>();
+        HashMap<String, Multimedia[]> videosLocations = new HashMap<>();
         videosLocations.put(bedNumber, new Multimedia[]{bruh, smile});
-        currentTimeSlot = new TimeSlot(new GregorianCalendar(), "test",videosLocations);
+        currentTimeSlot = new TimeSlot(new GregorianCalendar(), "test", videosLocations);
 
         initialSequence();
 
@@ -229,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             TtsRequest ttsRequest = TtsRequest.create(text, true);
             robot.speak(ttsRequest);
 
-            String locationName = findLocationWithPointerNumber(currentTimeSlot,currentTimeSlot.getNextLocationPointer());
+            String locationName = findLocationWithPointerNumber(getCurrentTimeSlot(), getCurrentTimeSlot().getNextLocationPointer());
             robot.goTo(locationName);
         });
         sequenceThread.start();
@@ -252,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             this.previousVolumeBeforePlayingVideo = robot.getVolume();
             robot.setVolume(9);
             Intent intent = new Intent(getApplicationContext(), YoutubeActivity.class);
-            intent.putExtra(CURRENTTIMESLOT, currentTimeSlot);
+            intent.putExtra(CURRENTTIMESLOT, getCurrentTimeSlot());
             intent.putExtra(PREVIOUSVOLUMEBEFOREPLAYINGVIDEO, previousVolumeBeforePlayingVideo);
             startActivity(intent);
             sequenceThread.interrupt();
@@ -266,11 +260,11 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     public void afterVideosPlayed() {
         assert sequenceThread == null : "Sequence Thread is not null";
         sequenceThread = new Thread(() -> {
-            int previousLocation = currentTimeSlot.getNextLocationPointer();
+            int previousLocation = getCurrentTimeSlot().getNextLocationPointer();
             int nextLocationPointer = previousLocation + 1;
-            if (nextLocationPointer < currentTimeSlot.getLocationVideos().size()) {
-                currentTimeSlot.setNextLocationPointer(nextLocationPointer);
-                String locationName = findLocationWithPointerNumber(currentTimeSlot,nextLocationPointer);
+            if (nextLocationPointer < getCurrentTimeSlot().getLocationVideos().size()) {
+                getCurrentTimeSlot().setNextLocationPointer(nextLocationPointer);
+                String locationName = findLocationWithPointerNumber(getCurrentTimeSlot(), nextLocationPointer);
                 System.out.println("next, I am going to location: " + locationName);
                 String thankYouText = "Thank you for your time";
                 TtsRequest ttsRequest = TtsRequest.create(thankYouText, true);
@@ -293,20 +287,20 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
     @Override
     public void onTtsStatusChanged(@NotNull TtsRequest ttsRequest) {
         if (ttsRequest.getStatus().equals(TtsRequest.Status.COMPLETED)) {
-            isSpeaking=false;
+            isSpeaking = false;
         }
     }
 
 
     protected void waitForTemiToFinishTts() {
-       isSpeaking=true; // start of speech
+        isSpeaking = true; // start of speech
         while (isSpeaking) {
 
         }
     }
 
 
-    protected static String findLocationWithPointerNumber(TimeSlot currentTimeSlot,int nextLocationPointer) {
+    public String findLocationWithPointerNumber(TimeSlot currentTimeSlot, int nextLocationPointer) {
         String locationName = "";
         int i = 0;
         for (String key : currentTimeSlot.getLocationVideos().keySet()) {
@@ -316,5 +310,9 @@ public class MainActivity extends AppCompatActivity implements OnRobotReadyListe
             i++;
         }
         return locationName;
+    }
+
+    public TimeSlot getCurrentTimeSlot() {
+        return currentTimeSlot;
     }
 }
